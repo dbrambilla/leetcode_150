@@ -1,3 +1,4 @@
 python/.venv/
 .vscode/
 .pytest_cache/
+python/src/__pycache__/

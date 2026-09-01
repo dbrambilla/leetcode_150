@@ -1,5 +1,5 @@
 from typing import List, Optional
-from ds import TreeNode, ListNode
+from ds import TreeNode, ListNode, Node
 from collections import deque
 
 def build_tree_from_list(arr: List[Optional[int]]) -> Optional[TreeNode]:
@@ -163,3 +163,58 @@ def print_linked_list(head: ListNode):
         elements.append(str(current.val))
         current = current.next
     print(" -> ".join(elements) if elements else "Empty List")
+
+def create_graph(adjList):
+    if not adjList:
+        return None
+        
+    # Dictionary to store created nodes by their 1-indexed value
+    nodes = {}
+    
+    # First pass: Create all node instances
+    for i in range(len(adjList)):
+        node_val = i + 1
+        nodes[node_val] = Node(node_val)
+        
+    # Second pass: Populate neighbors for each node
+    for i, neighbors in enumerate(adjList):
+        node_val = i + 1
+        current_node = nodes[node_val]
+        for neighbor_val in neighbors:
+            current_node.neighbors.append(nodes[neighbor_val])
+            
+    # Return the first node (1-indexed, value 1)
+    return nodes[1]
+
+def graph_to_adj_list(root_node: Node) -> List[List[int]]:
+    if not root_node:
+        return []
+        
+    # Step 1: Discover all unique nodes using BFS
+    visited_nodes = {}
+    queue = [root_node]
+    visited_nodes[root_node.val] = root_node
+    
+    while queue:
+        current = queue.pop(0)
+        for neighbor in current.neighbors:
+            if neighbor.val not in visited_nodes:
+                visited_nodes[neighbor.val] = neighbor
+                queue.append(neighbor)
+                
+    # Step 2: Determine maximum node value to define the size of the 1-indexed list
+    max_val = max(visited_nodes.keys())
+    
+    # Initialize the adjList structure with empty sublists
+    adjList = [[] for _ in range(max_val)]
+    
+    # Step 3: Populate neighbors into the 1-indexed positions
+    for val in range(1, max_val + 1):
+        # Handle cases where a node index exists but the node wasn't in the connected component
+        if val in visited_nodes:
+            node = visited_nodes[val]
+            # Extract neighbor integer values
+            neighbor_vals = [neighbor.val for neighbor in node.neighbors]
+            adjList[val - 1] = neighbor_vals
+            
+    return adjList

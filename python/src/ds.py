@@ -16,3 +16,8 @@ class ListNode:
     def __init__(self, val=0, next=None):
         self.val:int = val
         self.next:ListNode = next
+
+class Interval(object):
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
